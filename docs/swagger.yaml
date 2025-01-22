@@ -1,0 +1,123 @@
+definitions:
+  dataTypes.Filters:
+    properties:
+      brands:
+        items:
+          type: string
+        type: array
+      displaySize:
+        $ref: '#/definitions/dataTypes.MinMaxFloat'
+      price:
+        $ref: '#/definitions/dataTypes.MinMaxInt'
+      refreshRate:
+        $ref: '#/definitions/dataTypes.MinMaxInt'
+    type: object
+  dataTypes.MinMaxFloat:
+    properties:
+      max:
+        type: number
+      min:
+        type: number
+    type: object
+  dataTypes.MinMaxInt:
+    properties:
+      max:
+        type: integer
+      min:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/launchProcess:
+    get:
+      consumes:
+      - application/json
+      description: Do launch the data gathering process
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: LaunchProcess launch the data gathering process
+      tags:
+      - process
+  /api/v1/ping:
+    get:
+      consumes:
+      - application/json
+      description: Do Ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: Ping example
+      tags:
+      - example
+  /api/v1/resetDatabase:
+    get:
+      consumes:
+      - application/json
+      description: Reset the device databse
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: ResetDatabase reset the database
+      tags:
+      - process
+  /api/v1/top-devices:
+    get:
+      description: Returns the top 3 devices based on filters
+      parameters:
+      - description: Filters JSON
+        in: body
+        name: Filters
+        required: true
+        schema:
+          $ref: '#/definitions/dataTypes.Filters'
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Top 3 Devices
+      tags:
+      - process
+  /api/v1/user/{id}:
+    get:
+      description: Get details of a user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: User not found
+          schema:
+            type: string
+      tags:
+      - user
+swagger: "2.0"

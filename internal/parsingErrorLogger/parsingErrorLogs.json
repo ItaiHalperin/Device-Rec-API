@@ -1,0 +1,39 @@
+{
+  "logs": [
+    {
+      "time": "2025-01-10T18:45:03.784635+02:00",
+      "message": "in reviewer.GetReviewerString (tom's guide, device: Galaxy A11) failed to get review text",
+      "trace": "SimpleWeb/internal/reviewer.TomsGuide.getReviewString\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/reviewer/reviewer.go:285\nSimpleWeb/internal/reviewer.getSentimentMagnitude\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/reviewer/reviewer.go:159\nSimpleWeb/internal/reviewer.Review\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/reviewer/reviewer.go:47\nSimpleWeb/internal/dataPipelineManager.launchUploader\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:127\nSimpleWeb/internal/dataPipelineManager.LaunchDataCollectionProcess.func2\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:32\nruntime.goexit\n\t/Users/itaihalperin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.23.0.darwin-arm64/src/runtime/asm_arm64.s:1223\n"
+    },
+    {
+      "time": "2025-01-10T18:45:41.657172+02:00",
+      "message": "in priceScraper.getPriceFromDocument price not found in link: https://www.zap.co.il/model.aspx?modelid=1148406",
+      "trace": "SimpleWeb/internal/priceScraper.getPriceFromDocument\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/priceScraper/priceScraper.go:60\nSimpleWeb/internal/priceScraper.SetPrice\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/priceScraper/priceScraper.go:46\nSimpleWeb/internal/dataPipelineManager.launchUploader\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:101\nSimpleWeb/internal/dataPipelineManager.LaunchDataCollectionProcess.func2\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:32\nruntime.goexit\n\t/Users/itaihalperin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.23.0.darwin-arm64/src/runtime/asm_arm64.s:1223\n"
+    },
+    {
+      "time": "2025-01-10T18:47:18.575441+02:00",
+      "message": "in priceScraper.SetPrice (device: Galaxy F04) failed to get price url: in priceScraper.getPriceURL failed find price url (device: Samsung+Galaxy+F04)",
+      "trace": "SimpleWeb/internal/priceScraper.SetPrice\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/priceScraper/priceScraper.go:33\nSimpleWeb/internal/dataPipelineManager.launchUploader\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:101\nSimpleWeb/internal/dataPipelineManager.LaunchDataCollectionProcess.func2\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:32\nruntime.goexit\n\t/Users/itaihalperin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.23.0.darwin-arm64/src/runtime/asm_arm64.s:1223\n"
+    },
+    {
+      "time": "2025-01-10T18:47:51.841338+02:00",
+      "message": "in priceScraper.SetPrice (device: Galaxy C55) failed to get price url: in priceScraper.getPriceURL failed find price url (device: Samsung+Galaxy+C55)",
+      "trace": "SimpleWeb/internal/priceScraper.SetPrice\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/priceScraper/priceScraper.go:33\nSimpleWeb/internal/dataPipelineManager.launchUploader\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:101\nSimpleWeb/internal/dataPipelineManager.LaunchDataCollectionProcess.func2\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:32\nruntime.goexit\n\t/Users/itaihalperin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.23.0.darwin-arm64/src/runtime/asm_arm64.s:1223\n"
+    },
+    {
+      "time": "2025-01-10T18:49:06.575915+02:00",
+      "message": "in priceScraper.SetPrice (device: Galaxy A41) failed to get price url: in priceScraper.getPriceURL failed find price url (device: Samsung+Galaxy+A41)",
+      "trace": "SimpleWeb/internal/priceScraper.SetPrice\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/priceScraper/priceScraper.go:33\nSimpleWeb/internal/dataPipelineManager.launchUploader\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:101\nSimpleWeb/internal/dataPipelineManager.LaunchDataCollectionProcess.func2\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:32\nruntime.goexit\n\t/Users/itaihalperin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.23.0.darwin-arm64/src/runtime/asm_arm64.s:1223\n"
+    },
+    {
+      "time": "2025-01-10T18:49:58.993063+02:00",
+      "message": "in priceScraper.SetPrice (device: Galaxy XCover Pro) failed to get price url: in priceScraper.getPriceURL failed find price url (device: Samsung+Galaxy+XCover+Pro)",
+      "trace": "SimpleWeb/internal/priceScraper.SetPrice\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/priceScraper/priceScraper.go:33\nSimpleWeb/internal/dataPipelineManager.launchUploader\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:101\nSimpleWeb/internal/dataPipelineManager.LaunchDataCollectionProcess.func2\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:32\nruntime.goexit\n\t/Users/itaihalperin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.23.0.darwin-arm64/src/runtime/asm_arm64.s:1223\n"
+    },
+    {
+      "time": "2025-01-22T21:44:12.075306+02:00",
+      "message": "in priceScraper.SetPrice (device: iPhone 14) failed to get price url: helpers.GetRespByURL got bad status code: 403 403 Forbidden",
+      "trace": "SimpleWeb/internal/priceScraper.SetPrice\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/priceScraper/priceScraper.go:37\nSimpleWeb/internal/dataPipelineManager.launchUploader\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:101\nSimpleWeb/internal/dataPipelineManager.LaunchDataCollectionProcess.func2\n\t/Users/itaihalperin/GolandProjects/SimpleWeb/internal/dataPipelineManager/dataPipelineManager.go:32\nruntime.goexit\n\t/Users/itaihalperin/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.23.0.darwin-arm64/src/runtime/asm_arm64.s:1223\n"
+    }
+  ]
+}

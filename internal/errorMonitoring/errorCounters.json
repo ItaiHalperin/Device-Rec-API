@@ -1,0 +1,14 @@
+{
+  "clean_up_errors": 0,
+  "sentiment_analysis_errors": 0,
+  "creating_new_ai_client_errors": 1,
+  "ai_network_errors": 0,
+  "failed_ai_instruction_errors": 0,
+  "getting_url_errors": 1,
+  "getting_document_errors": 0,
+  "parsing_errors": 0,
+  "missing_document_errors": 0,
+  "database_network_errors": 0,
+  "general_database_errors": 0,
+  "invalid_const_id_string_errors": 0
+}
