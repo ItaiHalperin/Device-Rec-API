@@ -29,18 +29,6 @@ import (
 // @BasePath /api/v1
 // @schemes http
 
-type PixelModel struct {
-	Model       string `json:"model"`
-	Price       int    `json:"price"`
-	ReleaseDate string `json:"release_date"`
-	Name        string `json:"name"`
-	Rating      int    `json:"rating"`
-}
-
-type PixelModelsData struct {
-	GooglePixelModels []PixelModel `json:"google_pixel_models"`
-}
-
 // PingExample godoc
 // @Summary Ping example
 // @Schemes
@@ -94,7 +82,9 @@ func LaunchProcess(c *gin.Context) {
 	database := &mongoDatabase.MongoDatabase{}
 	err = database.Connect(&ctrlForConnection)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(http.StatusOK, gin.H{"message": "failed to connect to database"})
+		return
 	}
 	dal.Database = database
 	stopChannel, cancelFunc := dataPipelineManager.LaunchDataCollectionProcess(dal, dal)
@@ -128,11 +118,15 @@ func ResetDatabase(c *gin.Context) {
 	database := &mongoDatabase.MongoDatabase{}
 	err = database.Connect(&ctrlForConnection)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(http.StatusOK, gin.H{"message": "failed to connect to database"})
+		return
 	}
 	err = database.ResetDatabase(&ctrl)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(http.StatusOK, gin.H{"message": "failed to reset database"})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "successfully reset database"})
@@ -162,7 +156,9 @@ func TopDevices(c *gin.Context) {
 	database := &mongoDatabase.MongoDatabase{}
 	err := database.Connect(&ctrlForConnection)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(http.StatusOK, gin.H{"message": "failed to connect to database"})
+		return
 	}
 
 	devices, err := database.GetTop3(&filters, &ctrl)

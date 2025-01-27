@@ -70,13 +70,15 @@ func launchUploader(dal dataAccessLayer.DataAccessLayer, ctrl *dataTypes.FlowCon
 		}
 		minMaxValues, err := dal.Database.GetValidatedAndUnvalidatedMinMaxValues(ctrl)
 		if err != nil {
-			log.Fatalf("error getting validated and unvalid dataPiplineManager.launchUploader: %v", err)
-			return
+			log.Printf("error getting validated and unvalid dataPiplineManager.launchUploader: %v", err)
+			time.Sleep(10 * time.Second)
+			continue
 		}
 		err = dal.Database.NormalizeUnvalidatedScores(minMaxValues.Validated, ctrl)
 		if err != nil {
-			log.Fatalf("error normalizing unvalid dataPiplineManager.launchUploader: %v", err)
-			return
+			log.Printf("error normalizing unvalid dataPiplineManager.launchUploader: %v", err)
+			time.Sleep(10 * time.Second)
+			continue
 		}
 		deviceInQueue, err := dal.Database.Dequeue(ctrl)
 		if err != nil {
