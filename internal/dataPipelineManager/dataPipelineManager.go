@@ -1,13 +1,13 @@
 package dataPipelineManager
 
 import (
-	"SimpleWeb/internal/benchmarkScraper"
-	"SimpleWeb/internal/dataAccessLayer"
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/errorTypes"
-	"SimpleWeb/internal/priceScraper"
-	"SimpleWeb/internal/reviewer"
-	"SimpleWeb/internal/specAPI"
+	"DeviceRecommendationProject/internal/benchmarkScraper"
+	"DeviceRecommendationProject/internal/dataAccessLayer"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/errorTypes"
+	"DeviceRecommendationProject/internal/priceScraper"
+	"DeviceRecommendationProject/internal/reviewer"
+	"DeviceRecommendationProject/internal/specAPI"
 	"context"
 	"log"
 	"time"

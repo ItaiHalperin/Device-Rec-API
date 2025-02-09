@@ -1,7 +1,7 @@
 package dataAccessLayer
 
 import (
-	"SimpleWeb/internal/databaseInterface"
+	"DeviceRecommendationProject/internal/databaseInterface"
 )
 
 type DataAccessLayer struct {

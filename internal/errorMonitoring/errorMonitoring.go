@@ -1,8 +1,8 @@
 package errorMonitoring
 
 import (
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/mutexGetter"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/mutexGetter"
 	"encoding/json"
 	"log"
 	"os"
@@ -38,6 +38,10 @@ const (
 	InvalidConstIDStringError = "invalid_const_id_string_error"
 )
 
+const (
+	errorCountersPath = "internal/errorMonitoring/errorCounters.json"
+)
+
 func IncrementError(errorType string, ctrl *dataTypes.FlowControl) {
 	if ctrl.Ctx.Err() != nil {
 		log.Printf("stopping mongoDatabase.IncrementError: %v", ctrl.Ctx.Err())
@@ -48,7 +52,7 @@ func IncrementError(errorType string, ctrl *dataTypes.FlowControl) {
 	defer mutexGetter.GetMutex().Unlock()
 
 	log.Println()
-	errorCountersJson, err := os.ReadFile("/Users/itaihalperin/GolandProjects/SimpleWeb/internal/errorMonitoring/errorCounters.json")
+	errorCountersJson, err := os.ReadFile(errorCountersPath)
 	if err != nil {
 		log.Println("in errorMonitoring.IncrementCleanUpErrors failed to read error counters file: ", err)
 		ctrl.StopOnTooManyErrorsChannel <- struct{}{}
@@ -100,7 +104,7 @@ func IncrementError(errorType string, ctrl *dataTypes.FlowControl) {
 	}
 
 	updatedJSON, _ := json.MarshalIndent(errorCounters, "", "  ")
-	err = os.WriteFile("/Users/itaihalperin/GolandProjects/SimpleWeb/internal/errorMonitoring/errorCounters.json", updatedJSON, 0644)
+	err = os.WriteFile(errorCountersPath, updatedJSON, 0644)
 	if err != nil {
 		log.Println("in errorMonitoring.IncrementCleanUpErrors failed to rewrite error file: ", err)
 		ctrl.StopOnTooManyErrorsChannel <- struct{}{}
@@ -117,7 +121,7 @@ func checkErrorThreshold(currentErrors int, maxErrors int, ctrl *dataTypes.FlowC
 func ResetErrorCounters(ctrl *dataTypes.FlowControl) error {
 	var data dataTypes.ErrorCounters
 	updatedJSON, _ := json.MarshalIndent(data, "", "  ")
-	err := os.WriteFile("/Users/itaihalperin/GolandProjects/SimpleWeb/internal/errorMonitoring/errorCounters.json", updatedJSON, 0644)
+	err := os.WriteFile(errorCountersPath, updatedJSON, 0644)
 	if err != nil {
 		log.Println("in errorMonitoring.ResetErrorCounters failed to rewrite error file: ", err)
 		ctrl.StopOnTooManyErrorsChannel <- struct{}{}

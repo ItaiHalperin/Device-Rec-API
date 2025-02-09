@@ -1,11 +1,11 @@
 package specAPI
 
 import (
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/errorMonitoring"
-	"SimpleWeb/internal/errorTypes"
-	"SimpleWeb/internal/helpers"
-	"SimpleWeb/internal/parsingErrorLogger"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/errorMonitoring"
+	"DeviceRecommendationProject/internal/errorTypes"
+	"DeviceRecommendationProject/internal/helpers"
+	"DeviceRecommendationProject/internal/parsingErrorLogger"
 	"encoding/json"
 	"fmt"
 	"io"

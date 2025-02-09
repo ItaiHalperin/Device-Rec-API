@@ -1,12 +1,12 @@
 package specAPI
 
 import (
-	"SimpleWeb/internal/aiAnalysis"
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/errorMonitoring"
-	"SimpleWeb/internal/errorTypes"
-	"SimpleWeb/internal/helpers"
-	"SimpleWeb/internal/parsingErrorLogger"
+	"DeviceRecommendationProject/internal/aiAnalysis"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/errorMonitoring"
+	"DeviceRecommendationProject/internal/errorTypes"
+	"DeviceRecommendationProject/internal/helpers"
+	"DeviceRecommendationProject/internal/parsingErrorLogger"
 	"fmt"
 	"log"
 	"strconv"

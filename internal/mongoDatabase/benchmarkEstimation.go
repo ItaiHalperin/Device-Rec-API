@@ -1,10 +1,10 @@
 package mongoDatabase
 
 import (
-	"SimpleWeb/internal/aiAnalysis"
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/errorTypes"
-	"SimpleWeb/internal/helpers"
+	"DeviceRecommendationProject/internal/aiAnalysis"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/errorTypes"
+	"DeviceRecommendationProject/internal/helpers"
 	"context"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson"

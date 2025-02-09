@@ -1,11 +1,11 @@
 package aiAnalysis
 
 import (
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/errorMonitoring"
-	"SimpleWeb/internal/errorTypes"
-	"SimpleWeb/internal/helpers"
-	"SimpleWeb/internal/parsingErrorLogger"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/errorMonitoring"
+	"DeviceRecommendationProject/internal/errorTypes"
+	"DeviceRecommendationProject/internal/helpers"
+	"DeviceRecommendationProject/internal/parsingErrorLogger"
 	language "cloud.google.com/go/language/apiv2"
 	"cloud.google.com/go/language/apiv2/languagepb"
 	"context"

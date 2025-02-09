@@ -1,15 +1,16 @@
 package api
 
 import (
-	"SimpleWeb/internal/dataAccessLayer"
-	"SimpleWeb/internal/dataPipelineManager"
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/errorMonitoring"
-	"SimpleWeb/internal/mongoDatabase"
+	"DeviceRecommendationProject/internal/dataAccessLayer"
+	"DeviceRecommendationProject/internal/dataPipelineManager"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/errorMonitoring"
+	"DeviceRecommendationProject/internal/mongoDatabase"
 	"context"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -28,6 +29,9 @@ import (
 // @host localhost:8080
 // @BasePath /api/v1
 // @schemes http
+type ServerCtrl struct {
+	ServerShutdownChannel <-chan os.Signal
+}
 
 // PingExample godoc
 // @Summary Ping example
@@ -62,7 +66,7 @@ func GetUser(c *gin.Context) {
 // @Produce  json
 // @Success 200 {string} string "pong"
 // @Router /api/v1/launchProcess [get]
-func LaunchProcess(c *gin.Context) {
+func (service *ServerCtrl) LaunchProcess(c *gin.Context) {
 	ctrl := dataTypes.FlowControl{Ctx: context.Background(), StopOnTooManyErrorsChannel: make(chan<- struct{})}
 	err := errorMonitoring.ResetErrorCounters(&ctrl)
 	if err != nil {
@@ -88,10 +92,15 @@ func LaunchProcess(c *gin.Context) {
 	}
 	dal.Database = database
 	stopChannel, cancelFunc := dataPipelineManager.LaunchDataCollectionProcess(dal, dal)
-	_ = <-stopChannel
-	log.Println("canceling context...")
-	cancelFunc()
-	c.JSON(http.StatusOK, gin.H{"message": "finished due to too many errors"})
+	select {
+	case <-stopChannel:
+		log.Println("canceling context...")
+		cancelFunc()
+		c.JSON(http.StatusOK, gin.H{"message": "finished due to too many errors"})
+	case <-service.ServerShutdownChannel:
+		cancelFunc()
+	}
+
 }
 
 // @Summary ResetDatabase reset the database
@@ -103,17 +112,21 @@ func LaunchProcess(c *gin.Context) {
 // @Success 200 {string} string "pong"
 // @Router /api/v1/resetDatabase [get]
 func ResetDatabase(c *gin.Context) {
-	ctrl := dataTypes.FlowControl{Ctx: context.Background(), StopOnTooManyErrorsChannel: make(chan<- struct{})}
+	resetCtx, cancelReset := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancelReset()
+	ctrl := dataTypes.FlowControl{Ctx: resetCtx, StopOnTooManyErrorsChannel: make(chan<- struct{})}
 	err := errorMonitoring.ResetErrorCounters(&ctrl)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"message": "failed to reset monitoring"})
 		return
 	}
 
-	channelForConnect := make(chan struct{}, 1)
+	channelForConnection := make(chan struct{}, 1)
+	ctxForConnection, cancelConnection := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancelConnection()
 	ctrlForConnection := dataTypes.FlowControl{
-		Ctx:                        context.TODO(),
-		StopOnTooManyErrorsChannel: channelForConnect,
+		Ctx:                        ctxForConnection,
+		StopOnTooManyErrorsChannel: channelForConnection,
 	}
 	database := &mongoDatabase.MongoDatabase{}
 	err = database.Connect(&ctrlForConnection)

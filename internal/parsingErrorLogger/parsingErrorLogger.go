@@ -1,12 +1,16 @@
 package parsingErrorLogger
 
 import (
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/helpers"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/helpers"
 	"encoding/json"
 	"log"
 	"os"
 	"time"
+)
+
+const (
+	parsingErrorLogsPath = "internal/parsingErrorLogger/parsingErrorLogs.json"
 )
 
 type parsingErrorLogsFile struct {
@@ -19,7 +23,7 @@ func LogErrorInJsonFile(message string, ctrl *dataTypes.FlowControl) {
 		Message: message,
 		Trace:   helpers.GetStackTrace(1),
 	}
-	parsingErrorLogsJson, err := os.ReadFile("/Users/itaihalperin/GolandProjects/SimpleWeb/internal/parsingErrorLogger/parsingErrorLogs.json")
+	parsingErrorLogsJson, err := os.ReadFile(parsingErrorLogsPath)
 	if err != nil {
 		log.Println("in parsingErrorLogger.LogErrorInJsonFile failed to read parsing error logs file: ", err)
 		ctrl.StopOnTooManyErrorsChannel <- struct{}{}
@@ -34,7 +38,7 @@ func LogErrorInJsonFile(message string, ctrl *dataTypes.FlowControl) {
 	parsingErrorLogs.ErrorLogs = append(parsingErrorLogs.ErrorLogs, errLog)
 
 	updatedJSON, _ := json.MarshalIndent(parsingErrorLogs, "", "  ")
-	err = os.WriteFile("/Users/itaihalperin/GolandProjects/SimpleWeb/internal/parsingErrorLogger/parsingErrorLogs.json", updatedJSON, 0644)
+	err = os.WriteFile(parsingErrorLogsPath, updatedJSON, 0644)
 	if err != nil {
 		log.Println("in errorMonitoring.IncrementCleanUpErrors failed to rewrite error file: ", err)
 		ctrl.StopOnTooManyErrorsChannel <- struct{}{}

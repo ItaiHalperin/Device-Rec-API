@@ -1,4 +1,4 @@
-module SimpleWeb
+module DeviceRecommendationProject
 
 go 1.23.0
 

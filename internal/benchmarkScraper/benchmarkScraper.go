@@ -1,10 +1,10 @@
 package benchmarkScraper
 
 import (
-	"SimpleWeb/internal/dataTypes"
-	"SimpleWeb/internal/errorMonitoring"
-	"SimpleWeb/internal/errorTypes"
-	"SimpleWeb/internal/helpers"
+	"DeviceRecommendationProject/internal/dataTypes"
+	"DeviceRecommendationProject/internal/errorMonitoring"
+	"DeviceRecommendationProject/internal/errorTypes"
+	"DeviceRecommendationProject/internal/helpers"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"log"

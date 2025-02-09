@@ -1,8 +1,8 @@
 package mongoDatabase
 
 import (
-	"SimpleWeb/internal/aiAnalysis"
-	"SimpleWeb/internal/dataTypes"
+	"DeviceRecommendationProject/internal/aiAnalysis"
+	"DeviceRecommendationProject/internal/dataTypes"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

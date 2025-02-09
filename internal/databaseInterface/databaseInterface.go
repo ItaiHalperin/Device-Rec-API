@@ -1,7 +1,7 @@
 package databaseInterface
 
 import (
-	"SimpleWeb/internal/dataTypes"
+	"DeviceRecommendationProject/internal/dataTypes"
 )
 
 type DatabaseInterface interface {

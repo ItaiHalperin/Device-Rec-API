@@ -9,6 +9,6 @@
   "parsing_errors": 0,
   "missing_document_errors": 0,
   "database_network_errors": 0,
-  "general_database_errors": 2,
+  "general_database_errors": 0,
   "invalid_const_id_string_errors": 0
 }
