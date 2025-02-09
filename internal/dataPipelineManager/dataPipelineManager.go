@@ -5,11 +5,13 @@ import (
 	"DeviceRecommendationProject/internal/dataAccessLayer"
 	"DeviceRecommendationProject/internal/dataTypes"
 	"DeviceRecommendationProject/internal/errorTypes"
+	"DeviceRecommendationProject/internal/helpers"
 	"DeviceRecommendationProject/internal/priceScraper"
 	"DeviceRecommendationProject/internal/reviewer"
 	"DeviceRecommendationProject/internal/specAPI"
 	"context"
 	"log"
+	"reflect"
 	"time"
 )
 
@@ -60,94 +62,124 @@ func launchEnqueuer(dal dataAccessLayer.DataAccessLayer, ctrl *dataTypes.FlowCon
 	}
 }
 
+func handleError(err error, message string, deviceName string, sleepDuration time.Duration) {
+	log.Printf("in dataPipelineManager.launchUploader (device: %s) %s: %v",
+		deviceName, message, err)
+	time.Sleep(sleepDuration)
+}
+
+func processNormalization(dal dataAccessLayer.DataAccessLayer, device *dataTypes.Device,
+	ctrl *dataTypes.FlowControl) (dataTypes.MinMaxValues, error) {
+	minMaxValues, err := dal.Database.GetValidatedAndUnvalidatedMinMaxValues(ctrl)
+	if err != nil {
+		return dataTypes.MinMaxValues{}, err
+	}
+
+	newMinMax := helpers.GetNewMinMax(device, minMaxValues)
+	reviewer.SetNormalizedReviewScore(newMinMax, device)
+
+	if !reflect.DeepEqual(newMinMax, minMaxValues.Validated) {
+		return dataTypes.MinMaxValues{}, dal.Database.NormalizeUnvalidatedScores(newMinMax, ctrl)
+	}
+	return newMinMax, nil
+}
+
+func handleBenchmarkEstimation(dal dataAccessLayer.DataAccessLayer, count int, limit int, ctrl *dataTypes.FlowControl) (int, error) {
+	if count > limit {
+		if err := dal.Database.ReestimateBenchmarks(ctrl); err != nil {
+			return count, err
+		}
+		return 0, nil
+	}
+	return count, nil
+}
+
 func launchUploader(dal dataAccessLayer.DataAccessLayer, ctrl *dataTypes.FlowControl) {
 	numberOfEstimatedBenchmarks := 0
-	benchmarkCycleLimit := 1
+	benchmarkCycleLimit := 3
+
 	for {
 		if ctrl.Ctx.Err() != nil {
 			log.Printf("stopping dataPiplineManager.launchUploader: %v", ctrl.Ctx.Err())
 			return
 		}
-		minMaxValues, err := dal.Database.GetValidatedAndUnvalidatedMinMaxValues(ctrl)
-		if err != nil {
-			log.Printf("error getting validated and unvalid dataPiplineManager.launchUploader: %v", err)
-			time.Sleep(10 * time.Second)
-			continue
-		}
-		err = dal.Database.NormalizeUnvalidatedScores(minMaxValues.Validated, ctrl)
-		if err != nil {
-			log.Printf("error normalizing unvalid dataPiplineManager.launchUploader: %v", err)
-			time.Sleep(10 * time.Second)
-			continue
-		}
+
 		deviceInQueue, err := dal.Database.Dequeue(ctrl)
 		if err != nil {
 			if errorTypes.IsMissingDocumentError(err) {
-				log.Printf("in dataPipelineManager.launchUploader no device to dequeue: %v", err)
-				time.Sleep(30 * time.Second)
-				continue
-			} else {
-				log.Printf("in dataPipelineManager.launchUploader failed to dequeue: %v", err)
-				time.Sleep(10 * time.Second)
+				handleError(err, "no device to dequeue", "", 10*time.Second)
 				continue
 			}
-		}
-		device := &dataTypes.Device{}
-		device.Image = deviceInQueue.Image
-		err = specAPI.SetSpecs(device, deviceInQueue.Detail, ctrl)
-		if err != nil {
-			log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to set specs: %v", deviceInQueue.Name, err)
-			time.Sleep(10 * time.Second)
+			handleError(err, "failed to dequeue", "", 10*time.Second)
 			continue
 		}
-		err = priceScraper.SetPrice(device, ctrl)
+
+		device, err := gatherData(deviceInQueue, dal, ctrl)
 		if err != nil {
-			log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to set price: %v", deviceInQueue.Name, err)
-			time.Sleep(10 * time.Second)
+			handleError(err, "data gathering failed", deviceInQueue.Name, 10*time.Second)
+		}
+
+		if device.Benchmark.IsEstimatedBenchmark {
+			numberOfEstimatedBenchmarks++
+		}
+
+		newMinMax, err := processNormalization(dal, device, ctrl)
+		if err != nil {
+			handleError(err, "normalization failed", deviceInQueue.Name, 10*time.Second)
 			continue
 		}
-		err = priceScraper.SetPriceCategory(device, ctrl)
-		if err != nil {
-			log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to set price category: %v", deviceInQueue.Name, err)
-			time.Sleep(10 * time.Second)
+		if err = dal.Database.UploadDevice(device, newMinMax, ctrl); err != nil {
+			handleError(err, "failed to upload device", deviceInQueue.Name, 10*time.Second)
 			continue
 		}
-		err = benchmarkScraper.SetBenchmarkScores(device, ctrl)
+
+		numberOfEstimatedBenchmarks, err = handleBenchmarkEstimation(dal, numberOfEstimatedBenchmarks,
+			benchmarkCycleLimit, ctrl)
 		if err != nil {
-			if errorTypes.IsNoSuchPhoneBenchmarkError(err) {
-				log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to find benchmark: %v", deviceInQueue.Name, err)
-				device.Benchmark.IsEstimatedBenchmark = true
-				err = dal.Database.SetLastYearEquivalentBenchmarkScores(device, ctrl)
-				if err != nil {
-					log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to set last year equivalent device: %v", deviceInQueue.Name, err)
-				}
-				numberOfEstimatedBenchmarks++
-			} else {
-				log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to access benchmark page: %v", deviceInQueue.Name, err)
-			}
-		}
-		newMinMax, err := reviewer.Review(device, dal, ctrl)
-		if err != nil {
-			log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to review device: %v", deviceInQueue.Name, err)
-			time.Sleep(10 * time.Second)
+			handleError(err, "failed to reestimate benchmarks", deviceInQueue.Name, 10*time.Second)
 			continue
 		}
-		err = dal.Database.UploadDevice(device, newMinMax, ctrl)
-		if err != nil {
-			log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to upload device: %v", deviceInQueue.Name, err)
-			time.Sleep(10 * time.Second)
-			continue
-		}
-		if numberOfEstimatedBenchmarks > benchmarkCycleLimit {
-			err = dal.Database.ReestimateBenchmarks(ctrl)
-			if err != nil {
-				log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to reestimate benchmarks: %v", deviceInQueue.Name, err)
-				time.Sleep(10 * time.Second)
-				continue
-			} else {
-				numberOfEstimatedBenchmarks = 0
-			}
-		}
-		time.Sleep(1 * time.Second)
+
+		time.Sleep(30 * time.Second)
 	}
+}
+
+func gatherData(deviceInQueue dataTypes.DeviceInQueue, dal dataAccessLayer.DataAccessLayer, ctrl *dataTypes.FlowControl) (*dataTypes.Device, error) {
+	device := &dataTypes.Device{}
+	device.Image = deviceInQueue.Image
+	err := specAPI.SetSpecs(device, deviceInQueue.Detail, ctrl)
+	if err != nil {
+		log.Printf("in dataPipelineManager.gatherData (device: %v) failed to set specs: %v", deviceInQueue.Name, err)
+		return &dataTypes.Device{}, err
+	}
+	err = priceScraper.SetPrice(device, ctrl)
+	if err != nil {
+		log.Printf("in dataPipelineManager.gatherData (device: %v) failed to set price: %v", deviceInQueue.Name, err)
+		return &dataTypes.Device{}, err
+	}
+	err = priceScraper.SetPriceCategory(device, ctrl)
+	if err != nil {
+		log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to set price category: %v", deviceInQueue.Name, err)
+		return &dataTypes.Device{}, err
+	}
+	err = benchmarkScraper.SetBenchmarkScores(device, ctrl)
+	if err != nil {
+		if errorTypes.IsNoSuchPhoneBenchmarkError(err) {
+			log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to find benchmark: %v", deviceInQueue.Name, err)
+			device.Benchmark.IsEstimatedBenchmark = true
+			err = dal.Database.SetLastYearEquivalentBenchmarkScores(device, ctrl)
+			if err != nil {
+				log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to set last year equivalent device: %v", deviceInQueue.Name, err)
+			}
+		} else {
+			log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to access benchmark page: %v", deviceInQueue.Name, err)
+			return &dataTypes.Device{}, err
+		}
+	}
+	err = reviewer.Review(device, ctrl)
+	if err != nil {
+		log.Printf("in dataPipelineManager.launchUploader (device: %v) failed to review device: %v", deviceInQueue.Name, err)
+		return &dataTypes.Device{}, err
+	}
+	return device, nil
 }

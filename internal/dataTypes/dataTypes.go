@@ -150,3 +150,7 @@ type Filters struct {
 	RefreshRate MinMaxInt
 	Brands      []string
 }
+
+type ValidationFlag struct {
+	IsUnfinishedValidation bool
+}

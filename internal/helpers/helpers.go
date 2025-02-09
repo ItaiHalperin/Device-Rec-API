@@ -9,6 +9,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"io"
 	"log"
+	"math"
 	"math/rand"
 	"net/http"
 	"regexp"
@@ -215,4 +216,71 @@ func GetStackTrace(skip int) string {
 	}
 
 	return sb.String()
+}
+func GetNewMinMax(device *dataTypes.Device, validatedAndUnvalidatedMinMaxValue dataTypes.ValidatedAndUnvalidatedMinMaxValues) dataTypes.MinMaxValues {
+	newMinSentiment, newMaxSentiment := math.Min(validatedAndUnvalidatedMinMaxValue.Validated.Sentiment.Min, device.Review.ReviewSentiment),
+		math.Max(validatedAndUnvalidatedMinMaxValue.Validated.Sentiment.Max, device.Review.ReviewSentiment)
+	newMinMagnitude, newMaxMagnitude := math.Min(validatedAndUnvalidatedMinMaxValue.Validated.Magnitude.Min, device.Review.ReviewMagnitude),
+		math.Max(validatedAndUnvalidatedMinMaxValue.Validated.Magnitude.Max, device.Review.ReviewMagnitude)
+	newSentimentMinMax := dataTypes.MinMaxFloat{
+		Min: newMinSentiment,
+		Max: newMaxSentiment,
+	}
+	newMagnitudeMinMax := dataTypes.MinMaxFloat{
+		Min: newMinMagnitude,
+		Max: newMaxMagnitude,
+	}
+
+	newMinSingleCoreScore, newMaxSingleCoreScore := math.Min(validatedAndUnvalidatedMinMaxValue.Validated.SingleCoreScore.Min, device.Benchmark.SingleCoreScore),
+		math.Max(validatedAndUnvalidatedMinMaxValue.Validated.SingleCoreScore.Max, device.Benchmark.SingleCoreScore)
+	newMinMultiCoreScore, newMaxMultiCoreScore := math.Min(validatedAndUnvalidatedMinMaxValue.Validated.MultiCoreScore.Min, device.Benchmark.MultiCoreScore),
+		math.Max(validatedAndUnvalidatedMinMaxValue.Validated.MultiCoreScore.Max, device.Benchmark.MultiCoreScore)
+	newSingleCoreScoreMinMax := dataTypes.MinMaxFloat{
+		Min: newMinSingleCoreScore,
+		Max: newMaxSingleCoreScore,
+	}
+	newMultiCoreScoreMinMax := dataTypes.MinMaxFloat{
+		Min: newMinMultiCoreScore,
+		Max: newMaxMultiCoreScore,
+	}
+
+	newMinBatteryCapacity, newMaxBatteryCapacity := math.Min(validatedAndUnvalidatedMinMaxValue.Validated.BatteryCapacity.Min, device.Specs.BatteryCapacity),
+		math.Max(validatedAndUnvalidatedMinMaxValue.Validated.BatteryCapacity.Max, device.Specs.BatteryCapacity)
+	newBatteryCapacityMinMax := dataTypes.MinMaxFloat{
+		Min: newMinBatteryCapacity,
+		Max: newMaxBatteryCapacity,
+	}
+
+	newMinPixelDensity, newMaxPixelDensity := math.Min(validatedAndUnvalidatedMinMaxValue.Validated.PixelDensity.Min, device.Specs.PixelDensity),
+		math.Max(validatedAndUnvalidatedMinMaxValue.Validated.PixelDensity.Max, device.Specs.PixelDensity)
+	newPixelDensityMinMax := dataTypes.MinMaxFloat{
+		Min: newMinPixelDensity,
+		Max: newMaxPixelDensity,
+	}
+
+	newMinNits, newMaxNits := math.Min(validatedAndUnvalidatedMinMaxValue.Validated.Nits.Min, float64(device.Specs.Nits)),
+		math.Max(validatedAndUnvalidatedMinMaxValue.Validated.Nits.Max, float64(device.Specs.Nits))
+	newNitsMinMax := dataTypes.MinMaxFloat{
+		Min: newMinNits,
+		Max: newMaxNits,
+	}
+	newMinMax := dataTypes.MinMaxValues{
+		NumberOfDevices: validatedAndUnvalidatedMinMaxValue.Validated.NumberOfDevices,
+		Sentiment:       newSentimentMinMax,
+		Magnitude:       newMagnitudeMinMax,
+		SingleCoreScore: newSingleCoreScoreMinMax,
+		MultiCoreScore:  newMultiCoreScoreMinMax,
+		BatteryCapacity: newBatteryCapacityMinMax,
+		PixelDensity:    newPixelDensityMinMax,
+		Nits:            newNitsMinMax,
+	}
+	return newMinMax
+}
+func CalculateNormalizedValue(min, max, current float64) float64 {
+	if min == max {
+		return 0
+	} else {
+		return (current - min) /
+			(max - min)
+	}
 }

@@ -18,8 +18,17 @@ func (mdb *MongoDatabase) validateScores(unvalidatedMinMax dataTypes.MinMaxValue
 		log.Printf("stopping mongoDatabase.validateScores: %v", ctrl.Ctx.Err())
 		return ctrl.Ctx.Err()
 	}
+	unfinishedValidationDoc := dataTypes.ValidationFlag{IsUnfinishedValidation: true}
+	ctxForInsert, cancelForInsert := context.WithTimeout(ctrl.Ctx, time.Second*30)
+	defer cancelForInsert()
+	log.Printf("adding unfinished validation flag to database...")
+	insertResult, err := coll.InsertOne(ctxForInsert, unfinishedValidationDoc)
+	if err != nil {
+		log.Println("in MongoDatabase.validateScores failed to insert unfinished validation flag")
+		return handleMongoError(err, false, ctrl)
+	}
 
-	err := mdb.validateMinMaxValuesDocument(unvalidatedMinMax, coll, ctrl)
+	err = mdb.validateMinMaxValuesDocument(unvalidatedMinMax, coll, ctrl)
 	if err != nil {
 		log.Println("in mongoDatabase.validateScores failed to validate minmax document")
 		return err
@@ -42,6 +51,13 @@ func (mdb *MongoDatabase) validateScores(unvalidatedMinMax dataTypes.MinMaxValue
 			log.Println("in mongoDatabase.validateScores failed to validate device scores")
 			return err
 		}
+	}
+	ctxForDelete, cancelForDelete := context.WithTimeout(ctrl.Ctx, time.Second*30)
+	defer cancelForDelete()
+	_, err = coll.DeleteOne(ctxForDelete, bson.M{"_id": insertResult.InsertedID})
+	if err != nil {
+		log.Println("in MongoDatabase.validateScores failed to delete unfinished validation flag")
+		return handleMongoError(err, false, ctrl)
 	}
 	return nil
 }

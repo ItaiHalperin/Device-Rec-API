@@ -264,13 +264,6 @@ func setResponseSchema[T any](model *genai.GenerativeModel) {
 		}
 	}
 }
-func GetNormalizedReviewScore(newMinMaxMagnitudeSentiment dataTypes.MinMaxValues, device *dataTypes.Device) float64 {
-	normalizedMagnitude := calculateNormalizedValue(newMinMaxMagnitudeSentiment.Magnitude.Min, newMinMaxMagnitudeSentiment.Magnitude.Max, device.Review.ReviewMagnitude)
-	normalizedSentiment := calculateNormalizedValue(newMinMaxMagnitudeSentiment.Sentiment.Min, newMinMaxMagnitudeSentiment.Sentiment.Max, device.Review.ReviewSentiment)
-
-	reviewScore := normalizedSentiment * normalizedMagnitude
-	return reviewScore
-}
 
 type scoreWeights struct {
 	benchmark float64
@@ -280,11 +273,11 @@ type scoreWeights struct {
 }
 
 func GetFinalScore(newMinMaxMagnitudeSentiment dataTypes.MinMaxValues, device *dataTypes.Device, scoresType int) float64 {
-	normalizedSingleCoreScore := calculateNormalizedValue(newMinMaxMagnitudeSentiment.SingleCoreScore.Min, newMinMaxMagnitudeSentiment.SingleCoreScore.Max, device.Benchmark.SingleCoreScore)
-	normalizedMultiCoreScore := calculateNormalizedValue(newMinMaxMagnitudeSentiment.MultiCoreScore.Min, newMinMaxMagnitudeSentiment.MultiCoreScore.Max, device.Benchmark.MultiCoreScore)
-	normalizedPixelDensity := calculateNormalizedValue(newMinMaxMagnitudeSentiment.PixelDensity.Min, newMinMaxMagnitudeSentiment.PixelDensity.Max, device.Specs.PixelDensity)
-	normalizedNitsScore := calculateNormalizedValue(newMinMaxMagnitudeSentiment.Nits.Min, newMinMaxMagnitudeSentiment.Nits.Max, float64(device.Specs.Nits))
-	normalizedBatteryScore := calculateNormalizedValue(newMinMaxMagnitudeSentiment.BatteryCapacity.Min, newMinMaxMagnitudeSentiment.BatteryCapacity.Max, device.Specs.BatteryCapacity)
+	normalizedSingleCoreScore := helpers.CalculateNormalizedValue(newMinMaxMagnitudeSentiment.SingleCoreScore.Min, newMinMaxMagnitudeSentiment.SingleCoreScore.Max, device.Benchmark.SingleCoreScore)
+	normalizedMultiCoreScore := helpers.CalculateNormalizedValue(newMinMaxMagnitudeSentiment.MultiCoreScore.Min, newMinMaxMagnitudeSentiment.MultiCoreScore.Max, device.Benchmark.MultiCoreScore)
+	normalizedPixelDensity := helpers.CalculateNormalizedValue(newMinMaxMagnitudeSentiment.PixelDensity.Min, newMinMaxMagnitudeSentiment.PixelDensity.Max, device.Specs.PixelDensity)
+	normalizedNitsScore := helpers.CalculateNormalizedValue(newMinMaxMagnitudeSentiment.Nits.Min, newMinMaxMagnitudeSentiment.Nits.Max, float64(device.Specs.Nits))
+	normalizedBatteryScore := helpers.CalculateNormalizedValue(newMinMaxMagnitudeSentiment.BatteryCapacity.Min, newMinMaxMagnitudeSentiment.BatteryCapacity.Max, device.Specs.BatteryCapacity)
 
 	var refreshRateScore float64
 	switch device.Specs.RefreshRate {
@@ -321,13 +314,4 @@ func GetFinalScore(newMinMaxMagnitudeSentiment dataTypes.MinMaxValues, device *d
 	return weights.display*normalizedDisplayScore + weights.battery*normalizedBatteryScore +
 		+weights.benchmark*normalizedBenchmarkScore +
 		weights.review*device.Review.ValidatedReviewScore
-}
-
-func calculateNormalizedValue(min, max, current float64) float64 {
-	if min == max {
-		return 0
-	} else {
-		return (current - min) /
-			(max - min)
-	}
 }
