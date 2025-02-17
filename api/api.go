@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
+	"github.com/ItaiHalperin/Device-Rec-API/dataTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/dataAccessLayer"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/dataPipelineManager"
-	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorMonitoring"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/mongoDatabase"
 	"github.com/gin-gonic/gin"

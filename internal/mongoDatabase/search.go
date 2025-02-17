@@ -2,7 +2,7 @@ package mongoDatabase
 
 import (
 	"context"
-	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/dataTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorMonitoring"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
 	"go.mongodb.org/mongo-driver/bson"

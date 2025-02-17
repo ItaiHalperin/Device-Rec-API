@@ -6,7 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/dataTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorHandling"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorMonitoring"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"

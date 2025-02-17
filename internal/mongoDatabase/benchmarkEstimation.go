@@ -3,8 +3,8 @@ package mongoDatabase
 import (
 	"context"
 	"errors"
+	"github.com/ItaiHalperin/Device-Rec-API/dataTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/aiAnalysis"
-	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/helpers"
 	"go.mongodb.org/mongo-driver/bson"

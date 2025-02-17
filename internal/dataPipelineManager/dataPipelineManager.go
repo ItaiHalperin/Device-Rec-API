@@ -2,9 +2,9 @@ package dataPipelineManager
 
 import (
 	"context"
+	"github.com/ItaiHalperin/Device-Rec-API/dataTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/benchmarkScraper"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/dataAccessLayer"
-	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/helpers"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/priceScraper"
