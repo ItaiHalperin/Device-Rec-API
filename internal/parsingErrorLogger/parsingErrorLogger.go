@@ -1,9 +1,9 @@
 package parsingErrorLogger
 
 import (
-	"Device-Rec-API/internal/dataTypes"
-	"Device-Rec-API/internal/helpers"
 	"encoding/json"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/helpers"
 	"log"
 	"os"
 	"time"

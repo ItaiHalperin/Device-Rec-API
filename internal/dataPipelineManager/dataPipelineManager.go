@@ -1,15 +1,15 @@
 package dataPipelineManager
 
 import (
-	"Device-Rec-API/internal/benchmarkScraper"
-	"Device-Rec-API/internal/dataAccessLayer"
-	"Device-Rec-API/internal/dataTypes"
-	"Device-Rec-API/internal/errorTypes"
-	"Device-Rec-API/internal/helpers"
-	"Device-Rec-API/internal/priceScraper"
-	"Device-Rec-API/internal/reviewer"
-	"Device-Rec-API/internal/specAPI"
 	"context"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/benchmarkScraper"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataAccessLayer"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/helpers"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/priceScraper"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/reviewer"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/specAPI"
 	"log"
 	"reflect"
 	"time"

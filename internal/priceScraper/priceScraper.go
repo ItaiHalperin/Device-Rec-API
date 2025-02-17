@@ -1,15 +1,15 @@
 package priceScraper
 
 import (
-	"Device-Rec-API/internal/aiAnalysis"
-	"Device-Rec-API/internal/dataTypes"
-	"Device-Rec-API/internal/errorMonitoring"
-	"Device-Rec-API/internal/errorTypes"
-	"Device-Rec-API/internal/helpers"
-	"Device-Rec-API/internal/parsingErrorLogger"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/aiAnalysis"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorMonitoring"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/helpers"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/parsingErrorLogger"
 	"github.com/PuerkitoBio/goquery"
 	"io"
 	"log"

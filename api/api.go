@@ -1,12 +1,12 @@
 package api
 
 import (
-	"Device-Rec-API/internal/dataAccessLayer"
-	"Device-Rec-API/internal/dataPipelineManager"
-	"Device-Rec-API/internal/dataTypes"
-	"Device-Rec-API/internal/errorMonitoring"
-	"Device-Rec-API/internal/mongoDatabase"
 	"context"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataAccessLayer"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataPipelineManager"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorMonitoring"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/mongoDatabase"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"

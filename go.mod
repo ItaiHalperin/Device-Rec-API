@@ -1,4 +1,4 @@
-module Device-Rec-API
+module github.com/ItaiHalperin/Device-Rec-API
 
 go 1.23.0
 

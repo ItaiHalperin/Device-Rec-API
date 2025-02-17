@@ -1,7 +1,7 @@
 package databaseInterface
 
 import (
-	"Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
 )
 
 type DatabaseInterface interface {

@@ -1,9 +1,9 @@
 package errorMonitoring
 
 import (
-	"Device-Rec-API/internal/dataTypes"
-	"Device-Rec-API/internal/mutexGetter"
 	"encoding/json"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/mutexGetter"
 	"log"
 	"os"
 )

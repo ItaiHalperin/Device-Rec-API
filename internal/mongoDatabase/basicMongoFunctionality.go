@@ -1,12 +1,12 @@
 package mongoDatabase
 
 import (
-	"Device-Rec-API/internal/dataTypes"
-	"Device-Rec-API/internal/errorMonitoring"
-	"Device-Rec-API/internal/errorTypes"
 	"context"
 	"errors"
 	"fmt"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorMonitoring"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

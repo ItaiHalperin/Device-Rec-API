@@ -1,12 +1,12 @@
 package mongoDatabase
 
 import (
-	"Device-Rec-API/internal/aiAnalysis"
-	"Device-Rec-API/internal/dataTypes"
-	"Device-Rec-API/internal/errorTypes"
-	"Device-Rec-API/internal/helpers"
 	"context"
 	"errors"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/aiAnalysis"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/helpers"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"

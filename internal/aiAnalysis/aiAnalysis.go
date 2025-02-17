@@ -1,17 +1,17 @@
 package aiAnalysis
 
 import (
-	"Device-Rec-API/internal/dataTypes"
-	"Device-Rec-API/internal/errorHandling"
-	"Device-Rec-API/internal/errorMonitoring"
-	"Device-Rec-API/internal/errorTypes"
-	"Device-Rec-API/internal/helpers"
-	"Device-Rec-API/internal/parsingErrorLogger"
 	language "cloud.google.com/go/language/apiv2"
 	"cloud.google.com/go/language/apiv2/languagepb"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorHandling"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorMonitoring"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/helpers"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/parsingErrorLogger"
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
 	"log"
