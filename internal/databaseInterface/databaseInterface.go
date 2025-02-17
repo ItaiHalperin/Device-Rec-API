@@ -1,7 +1,7 @@
 package databaseInterface
 
 import (
-	"DeviceRecommendationProject/internal/dataTypes"
+	"Device-Rec-API/internal/dataTypes"
 )
 
 type DatabaseInterface interface {
@@ -12,7 +12,6 @@ type DatabaseInterface interface {
 	Disconnect(*dataTypes.FlowControl) error
 	IsUp(*dataTypes.FlowControl) bool
 	GetLastYearEquivalentBenchmarkScores(*dataTypes.Device, *dataTypes.FlowControl) (float64, float64, error)
-	UploadDeviceBatch([]*dataTypes.Device, dataTypes.MinMaxValues, *dataTypes.FlowControl) error
 	Dequeue(ctrl *dataTypes.FlowControl) (dataTypes.DeviceInQueue, error)
 	EnqueueDeviceBatch(map[string][]string, *dataTypes.FlowControl) error
 	ReestimateBenchmarks(*dataTypes.FlowControl) error

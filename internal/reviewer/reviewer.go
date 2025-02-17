@@ -1,12 +1,12 @@
 package reviewer
 
 import (
-	"DeviceRecommendationProject/internal/aiAnalysis"
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/errorMonitoring"
-	"DeviceRecommendationProject/internal/errorTypes"
-	"DeviceRecommendationProject/internal/helpers"
-	"DeviceRecommendationProject/internal/parsingErrorLogger"
+	"Device-Rec-API/internal/aiAnalysis"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/errorMonitoring"
+	"Device-Rec-API/internal/errorTypes"
+	"Device-Rec-API/internal/helpers"
+	"Device-Rec-API/internal/parsingErrorLogger"
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -79,7 +79,7 @@ func getSentimentMagnitude(reviewer Reviewer, model string, ctrl *dataTypes.Flow
 	return sentiment*0.6 + ((stars-3)/2)*0.4, magnitude, nil
 }
 
-func SetNormalizedReviewScore(newMinMaxMagnitudeSentiment dataTypes.MinMaxValues, device *dataTypes.Device) {
+func SetUnvalidatedNormalizedReviewScore(newMinMaxMagnitudeSentiment dataTypes.MinMaxValues, device *dataTypes.Device) {
 	normalizedMagnitude := helpers.CalculateNormalizedValue(newMinMaxMagnitudeSentiment.Magnitude.Min, newMinMaxMagnitudeSentiment.Magnitude.Max, device.Review.ReviewMagnitude)
 	normalizedSentiment := helpers.CalculateNormalizedValue(newMinMaxMagnitudeSentiment.Sentiment.Min, newMinMaxMagnitudeSentiment.Sentiment.Max, device.Review.ReviewSentiment)
 

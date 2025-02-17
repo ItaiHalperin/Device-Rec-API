@@ -1,14 +1,14 @@
 package dataPipelineManager
 
 import (
-	"DeviceRecommendationProject/internal/benchmarkScraper"
-	"DeviceRecommendationProject/internal/dataAccessLayer"
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/errorTypes"
-	"DeviceRecommendationProject/internal/helpers"
-	"DeviceRecommendationProject/internal/priceScraper"
-	"DeviceRecommendationProject/internal/reviewer"
-	"DeviceRecommendationProject/internal/specAPI"
+	"Device-Rec-API/internal/benchmarkScraper"
+	"Device-Rec-API/internal/dataAccessLayer"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/errorTypes"
+	"Device-Rec-API/internal/helpers"
+	"Device-Rec-API/internal/priceScraper"
+	"Device-Rec-API/internal/reviewer"
+	"Device-Rec-API/internal/specAPI"
 	"context"
 	"log"
 	"reflect"
@@ -76,7 +76,7 @@ func processNormalization(dal dataAccessLayer.DataAccessLayer, device *dataTypes
 	}
 
 	newMinMax := helpers.GetNewMinMax(device, minMaxValues)
-	reviewer.SetNormalizedReviewScore(newMinMax, device)
+	reviewer.SetUnvalidatedNormalizedReviewScore(newMinMax, device)
 
 	if !reflect.DeepEqual(newMinMax, minMaxValues.Validated) {
 		return dataTypes.MinMaxValues{}, dal.Database.NormalizeUnvalidatedScores(newMinMax, ctrl)

@@ -1,8 +1,8 @@
 package errorMonitoring
 
 import (
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/mutexGetter"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/mutexGetter"
 	"encoding/json"
 	"log"
 	"os"

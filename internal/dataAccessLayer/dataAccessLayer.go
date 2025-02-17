@@ -1,7 +1,7 @@
 package dataAccessLayer
 
 import (
-	"DeviceRecommendationProject/internal/databaseInterface"
+	"Device-Rec-API/internal/databaseInterface"
 )
 
 type DataAccessLayer struct {

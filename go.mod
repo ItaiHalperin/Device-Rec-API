@@ -1,4 +1,4 @@
-module DeviceRecommendationProject
+module Device-Rec-API
 
 go 1.23.0
 

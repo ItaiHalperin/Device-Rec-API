@@ -1,11 +1,11 @@
 package specAPI
 
 import (
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/errorMonitoring"
-	"DeviceRecommendationProject/internal/errorTypes"
-	"DeviceRecommendationProject/internal/helpers"
-	"DeviceRecommendationProject/internal/parsingErrorLogger"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/errorMonitoring"
+	"Device-Rec-API/internal/errorTypes"
+	"Device-Rec-API/internal/helpers"
+	"Device-Rec-API/internal/parsingErrorLogger"
 	"encoding/json"
 	"fmt"
 	"io"

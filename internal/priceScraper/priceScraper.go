@@ -1,12 +1,12 @@
 package priceScraper
 
 import (
-	"DeviceRecommendationProject/internal/aiAnalysis"
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/errorMonitoring"
-	"DeviceRecommendationProject/internal/errorTypes"
-	"DeviceRecommendationProject/internal/helpers"
-	"DeviceRecommendationProject/internal/parsingErrorLogger"
+	"Device-Rec-API/internal/aiAnalysis"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/errorMonitoring"
+	"Device-Rec-API/internal/errorTypes"
+	"Device-Rec-API/internal/helpers"
+	"Device-Rec-API/internal/parsingErrorLogger"
 	"encoding/json"
 	"errors"
 	"fmt"

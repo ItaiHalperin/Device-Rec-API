@@ -1,8 +1,8 @@
 package mongoDatabase
 
 import (
-	"DeviceRecommendationProject/internal/aiAnalysis"
-	"DeviceRecommendationProject/internal/dataTypes"
+	"Device-Rec-API/internal/aiAnalysis"
+	"Device-Rec-API/internal/dataTypes"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -11,43 +11,8 @@ import (
 	"time"
 )
 
-func (mdb *MongoDatabase) UploadDeviceBatch(devices []*dataTypes.Device, newMinMax dataTypes.MinMaxValues, ctrl *dataTypes.FlowControl) error {
-	if ctrl.Ctx.Err() != nil {
-		log.Printf("stopping mongoDatabase.UploadDeviceBatch: %v", ctrl.Ctx.Err())
-		return ctrl.Ctx.Err()
-	}
-
-	coll := mdb.client.Database(Database).Collection(DeviceDataCollection)
-
-	var interfaceDevicesSlice []interface{}
-	for _, device := range devices {
-		device.UnvalidatedFinalScore = aiAnalysis.GetFinalScore(newMinMax, device, dataTypes.UnvalidatedScores)
-		err := mdb.SetDeviceIDYearAndMonth(device, coll, ctrl)
-		if err != nil {
-			log.Printf("stopping mongoDatabase.UploadDeviceBatch failed to set device ID year and month: %v", ctrl.Ctx.Err())
-			return err
-		}
-		interfaceDevicesSlice = append(interfaceDevicesSlice, device)
-	}
-	ctx, cancel := context.WithTimeout(ctrl.Ctx, time.Second*30)
-	defer cancel()
-	_, err := coll.InsertMany(ctx, interfaceDevicesSlice)
-
-	if err != nil {
-		log.Printf("in MongoDatabase.UploadDeviceBatch failed to insert devices: %v", err)
-		return handleMongoError(err, false, ctrl)
-	}
-
-	//TO-DO: Move validate score to a place where we can remember that we failed at this specific stage
-	err = mdb.validateScores(newMinMax, coll, ctrl)
-	if err != nil {
-		log.Printf("stopping mongoDatabase.UploadDeviceBatch failed to validate scores: %v", ctrl.Ctx.Err())
-		return err
-	}
-	return nil
-}
-
-func (mdb *MongoDatabase) UploadDevice(device *dataTypes.Device, unvalidatedMinMax dataTypes.MinMaxValues, ctrl *dataTypes.FlowControl) error {
+func (mdb *MongoDatabase) UploadDevice(device *dataTypes.Device, unvalidatedMinMax dataTypes.MinMaxValues,
+	ctrl *dataTypes.FlowControl) error {
 	if ctrl.Ctx.Err() != nil {
 		log.Printf("stopping mongoDatabase.UploadDevice: %v", ctrl.Ctx.Err())
 		return ctrl.Ctx.Err()
@@ -55,7 +20,7 @@ func (mdb *MongoDatabase) UploadDevice(device *dataTypes.Device, unvalidatedMinM
 
 	coll := mdb.client.Database(Database).Collection(DeviceDataCollection)
 	device.UnvalidatedFinalScore = aiAnalysis.GetFinalScore(unvalidatedMinMax, device, dataTypes.UnvalidatedScores)
-	err := mdb.SetDeviceIDYearAndMonth(device, coll, ctrl)
+	err := mdb.SetDeviceIDs(device, coll, ctrl)
 	if err != nil {
 		log.Printf("in mongoDatabase.UploadDevice failed to set device ID's")
 		return err
@@ -84,9 +49,10 @@ func (mdb *MongoDatabase) UploadDevice(device *dataTypes.Device, unvalidatedMinM
 	return nil
 }
 
-func (mdb *MongoDatabase) SetDeviceIDYearAndMonth(device *dataTypes.Device, deviceDataCollection *mongo.Collection, ctrl *dataTypes.FlowControl) error {
+func (mdb *MongoDatabase) SetDeviceIDs(device *dataTypes.Device, deviceDataCollection *mongo.Collection,
+	ctrl *dataTypes.FlowControl) error {
 	if ctrl.Ctx.Err() != nil {
-		log.Printf("stopping mongoDatabase.SetDeviceIDYearAndMonth: %v", ctrl.Ctx.Err())
+		log.Printf("stopping mongoDatabase.SetDeviceIDs: %v", ctrl.Ctx.Err())
 		return ctrl.Ctx.Err()
 	}
 
@@ -96,22 +62,26 @@ func (mdb *MongoDatabase) SetDeviceIDYearAndMonth(device *dataTypes.Device, devi
 
 	yearID, err := mdb.getYearID(yearNumber, deviceDataCollection, ctrl)
 	if err != nil {
-		log.Println("in mongoDatabase.setDevicePointersAndID failed to get year")
+		log.Println("in mongoDatabase.SetDeviceIDs failed to get year")
 		return err
 	}
-	monthID, err := mdb.getMonthID(monthNumber, yearID, newDeviceID, deviceDataCollection, ctrl)
+	monthID, err := mdb.getMonthID(monthNumber, yearID, deviceDataCollection, ctrl)
 	if err != nil {
-		log.Println("in mongoDatabase.setDevicePointersAndID failed to get month")
+		log.Println("in mongoDatabase.SetDeviceIDs failed to get month")
 		return err
 	}
 
 	err = mdb.addIDToDeviceArray(newDeviceID, deviceDataCollection, ctrl)
 	if err != nil {
-		log.Println("in mongoDatabase.setDevicePointersAndID failed to add ID to device IDs array")
+		log.Println("in mongoDatabase.SetDeviceIDs failed to add ID to devices array")
 		return err
 	}
 
 	err = mdb.addIDToMonth(newDeviceID, monthID, deviceDataCollection, ctrl)
+	if err != nil {
+		log.Println("in mongoDatabase.SetDeviceIDs failed to add ID to month devices array")
+		return err
+	}
 
 	device.Year = yearID
 	device.Month = monthID
@@ -212,7 +182,7 @@ func (mdb *MongoDatabase) addIDToYearArray(yearID primitive.ObjectID, deviceData
 	return nil
 }
 
-func (mdb *MongoDatabase) getMonthID(monthNumber int, yearID, deviceID primitive.ObjectID, coll *mongo.Collection, ctrl *dataTypes.FlowControl) (primitive.ObjectID, error) {
+func (mdb *MongoDatabase) getMonthID(monthNumber int, yearID primitive.ObjectID, coll *mongo.Collection, ctrl *dataTypes.FlowControl) (primitive.ObjectID, error) {
 	if ctrl.Ctx.Err() != nil {
 		log.Printf("stopping mongoDatabase.getMonthID: %v", ctrl.Ctx.Err())
 		return primitive.NilObjectID, ctrl.Ctx.Err()

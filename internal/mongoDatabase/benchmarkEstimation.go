@@ -1,10 +1,10 @@
 package mongoDatabase
 
 import (
-	"DeviceRecommendationProject/internal/aiAnalysis"
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/errorTypes"
-	"DeviceRecommendationProject/internal/helpers"
+	"Device-Rec-API/internal/aiAnalysis"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/errorTypes"
+	"Device-Rec-API/internal/helpers"
 	"context"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson"

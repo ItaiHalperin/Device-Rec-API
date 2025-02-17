@@ -1,8 +1,8 @@
 package parsingErrorLogger
 
 import (
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/helpers"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/helpers"
 	"encoding/json"
 	"log"
 	"os"

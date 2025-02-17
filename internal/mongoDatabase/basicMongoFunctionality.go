@@ -1,9 +1,9 @@
 package mongoDatabase
 
 import (
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/errorMonitoring"
-	"DeviceRecommendationProject/internal/errorTypes"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/errorMonitoring"
+	"Device-Rec-API/internal/errorTypes"
 	"context"
 	"errors"
 	"fmt"
@@ -144,22 +144,6 @@ func getClient(ctrl *dataTypes.FlowControl) (*mongo.Client, error) {
 
 	log.Println("created new client successfully")
 	return client, nil
-}
-
-func setupTextIndex(collection *mongo.Collection, ctrl *dataTypes.FlowControl) error {
-	model := mongo.IndexModel{
-		Keys: bson.D{{Key: "name", Value: "text"}},
-	}
-	ctx, cancel := context.WithTimeout(ctrl.Ctx, time.Minute)
-	defer cancel()
-	_, err := collection.Indexes().CreateOne(ctx, model)
-	if err != nil {
-		log.Println("setupTextIndex failure")
-		return handleMongoError(err, false, ctrl)
-	}
-
-	log.Println("setupTextIndex success")
-	return nil
 }
 
 type Benchmark struct {

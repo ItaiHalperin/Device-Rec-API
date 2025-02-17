@@ -1,11 +1,12 @@
 package aiAnalysis
 
 import (
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/errorMonitoring"
-	"DeviceRecommendationProject/internal/errorTypes"
-	"DeviceRecommendationProject/internal/helpers"
-	"DeviceRecommendationProject/internal/parsingErrorLogger"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/errorHandling"
+	"Device-Rec-API/internal/errorMonitoring"
+	"Device-Rec-API/internal/errorTypes"
+	"Device-Rec-API/internal/helpers"
+	"Device-Rec-API/internal/parsingErrorLogger"
 	language "cloud.google.com/go/language/apiv2"
 	"cloud.google.com/go/language/apiv2/languagepb"
 	"context"
@@ -43,7 +44,12 @@ const (
 
 func AnalyseSentimentMagnitude(review string, ctrl *dataTypes.FlowControl) (float64, float64, error) {
 	if ctrl.Ctx.Err() != nil {
-		log.Printf("stopping aiAnlysis.AnalyseSentimentMagnitude: %v", ctrl.Ctx.Err())
+		errorHandling.LogErrorToScreen(errorHandling.LogParams{
+			DeviceName: "",
+			Function:   "aiAnalysis.AnalyseSentimentMagnitude",
+			ErrorMsg:   "",
+			IsCtxError: true,
+		}, ctrl.Ctx.Err())
 		return 0, 0, ctrl.Ctx.Err()
 	}
 
@@ -57,7 +63,12 @@ func AnalyseSentimentMagnitude(review string, ctrl *dataTypes.FlowControl) (floa
 	}
 	defer func(client *language.Client) {
 		if err = client.Close(); err != nil {
-			log.Printf("WARNING: Failed to close AI client: %v", err)
+			errorHandling.LogErrorToScreen(errorHandling.LogParams{
+				DeviceName: "",
+				Function:   "aiAnalysis.AnalyseSentimentMagnitude",
+				ErrorMsg:   "WARNING: Failed to close AI client",
+				IsCtxError: false,
+			}, ctrl.Ctx.Err())
 			errorMonitoring.IncrementError(errorMonitoring.CleanUpError, ctrl)
 		}
 	}(client)
@@ -74,7 +85,12 @@ func AnalyseSentimentMagnitude(review string, ctrl *dataTypes.FlowControl) (floa
 	})
 
 	if err != nil {
-		log.Printf("in aiAnalysis.AnalyseSentimentMagnitude failed to analyze sentiment: %v", err)
+		errorHandling.LogErrorToScreen(errorHandling.LogParams{
+			DeviceName: "",
+			Function:   "aiAnalysis.AnalyseSentimentMagnitude",
+			ErrorMsg:   "failed to analyze sentiment",
+			IsCtxError: false,
+		}, ctrl.Ctx.Err())
 		errorMonitoring.IncrementError(errorMonitoring.SentimentAnalysisError, ctrl)
 		return 0, 0, errorTypes.NewSentimentAnalysisError("in aiAnalysis.AnalyseSentimentMagnitude failed to analyse sentiment")
 	}
@@ -85,6 +101,12 @@ func AnalyseSentimentMagnitude(review string, ctrl *dataTypes.FlowControl) (floa
 
 func IsCorrectWebpage(instruction, brandAndName, searchSnippet string, ctrl *dataTypes.FlowControl) (bool, error) {
 	if ctrl.Ctx.Err() != nil {
+		errorHandling.LogErrorToScreen(errorHandling.LogParams{
+			DeviceName: "",
+			Function:   "aiAnalysis.IsCorrectWebpage",
+			ErrorMsg:   "",
+			IsCtxError: true,
+		}, ctrl.Ctx.Err())
 		log.Printf("stopping aiAnlysis.IsCorrectWebpage: %v", ctrl.Ctx.Err())
 		return false, ctrl.Ctx.Err()
 	}

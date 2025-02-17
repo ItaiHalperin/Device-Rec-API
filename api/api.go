@@ -1,11 +1,11 @@
 package api
 
 import (
-	"DeviceRecommendationProject/internal/dataAccessLayer"
-	"DeviceRecommendationProject/internal/dataPipelineManager"
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/errorMonitoring"
-	"DeviceRecommendationProject/internal/mongoDatabase"
+	"Device-Rec-API/internal/dataAccessLayer"
+	"Device-Rec-API/internal/dataPipelineManager"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/errorMonitoring"
+	"Device-Rec-API/internal/mongoDatabase"
 	"context"
 	"github.com/gin-gonic/gin"
 	"log"

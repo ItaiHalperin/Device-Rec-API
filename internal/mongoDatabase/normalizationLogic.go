@@ -1,8 +1,9 @@
 package mongoDatabase
 
 import (
-	"DeviceRecommendationProject/internal/aiAnalysis"
-	"DeviceRecommendationProject/internal/dataTypes"
+	"Device-Rec-API/internal/aiAnalysis"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/reviewer"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -67,7 +68,7 @@ func (mdb *MongoDatabase) normalizeDeviceScoresByID(curDeviceID primitive.Object
 		return err
 	}
 
-	curDevice.Review.UnvalidatedReviewScore = aiAnalysis.GetNormalizedReviewScore(newMinMax, &curDevice)
+	reviewer.SetUnvalidatedNormalizedReviewScore(newMinMax, &curDevice)
 	curDevice.UnvalidatedFinalScore = aiAnalysis.GetFinalScore(newMinMax, &curDevice, dataTypes.UnvalidatedScores)
 	ctx, cancel := context.WithTimeout(ctrl.Ctx, time.Second*30)
 	defer cancel()

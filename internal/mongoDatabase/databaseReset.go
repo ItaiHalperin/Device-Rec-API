@@ -1,8 +1,8 @@
 package mongoDatabase
 
 import (
-	"DeviceRecommendationProject/internal/dataTypes"
-	"DeviceRecommendationProject/internal/helpers"
+	"Device-Rec-API/internal/dataTypes"
+	"Device-Rec-API/internal/helpers"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
