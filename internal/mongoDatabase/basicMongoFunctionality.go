@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ItaiHalperin/Device-Rec-API/dataTypes"
+	"github.com/ItaiHalperin/Device-Rec-API/internal/errorHandling"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorMonitoring"
 	"github.com/ItaiHalperin/Device-Rec-API/internal/errorTypes"
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,8 +23,10 @@ func handleMongoError(err error, isDocumentExpectedToExist bool, ctrl *dataTypes
 		return ctrl.Ctx.Err()
 	}
 
-	if isDocumentExpectedToExist && errors.Is(err, mongo.ErrNoDocuments) {
-		errorMonitoring.IncrementError(errorMonitoring.MissingDocumentError, ctrl)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		if isDocumentExpectedToExist {
+			errorMonitoring.IncrementError(errorMonitoring.MissingDocumentError, ctrl)
+		}
 		return errorTypes.NewMissingDocumentError("failed to find document")
 	}
 	if mongo.IsNetworkError(err) {
@@ -206,4 +209,37 @@ func (mdb *MongoDatabase) getAllDeviceIDs(deviceDataCollection *mongo.Collection
 		return nil, err
 	}
 	return deviceIDsDocument.DeviceIDs, nil
+}
+
+func (mdb *MongoDatabase) IsInterruptedValidation(ctrl *dataTypes.FlowControl) (bool, error) {
+	if ctrl.Ctx.Err() != nil {
+		errorHandling.LogErrorToScreen(errorHandling.LogParams{
+			DeviceName: "",
+			Function:   "basicMongoFunctionality.IsInterruptedValidation",
+			ErrorMsg:   "",
+			IsCtxError: true,
+		}, ctrl.Ctx.Err())
+		return false, ctrl.Ctx.Err()
+	}
+
+	coll := mdb.client.Database(Database).Collection(DeviceDataCollection)
+	filter := bson.M{"isUnfinishedValidation": true}
+	var result dataTypes.ValidationFlag
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	err := coll.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		err = handleMongoError(err, false, ctrl)
+		if errorTypes.IsMissingDocumentError(err) {
+			return false, nil
+		}
+		errorHandling.LogErrorToScreen(errorHandling.LogParams{
+			DeviceName: "",
+			Function:   "basicMongoFunctionality.IsInterruptedValidation",
+			ErrorMsg:   "",
+			IsCtxError: false,
+		}, err)
+		return false, err
+	}
+	return true, nil
 }

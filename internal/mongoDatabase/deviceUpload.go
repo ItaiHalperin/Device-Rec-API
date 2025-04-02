@@ -31,16 +31,16 @@ func (mdb *MongoDatabase) UploadDevice(device *dataTypes.Device, unvalidatedMinM
 	_, err = coll.InsertOne(ctx, device)
 	if err != nil {
 		err = handleMongoError(err, false, ctrl)
-		log.Printf("in mongoDatabase.validateScores failed to insert device into database: %v", err)
+		log.Printf("in mongoDatabase.ValidateScores failed to insert device into database: %v", err)
 		return err
 	}
 	err = mdb.incrementUnvalidatedNumberOfDevices(&unvalidatedMinMax, coll, ctrl)
 	if err != nil {
-		log.Println("in mongoDatabase.validateScores failed to increment unvalidated number of devices")
+		log.Println("in mongoDatabase.ValidateScores failed to increment unvalidated number of devices")
 		return err
 	}
 
-	err = mdb.validateScores(unvalidatedMinMax, coll, ctrl)
+	err = mdb.ValidateScores(unvalidatedMinMax, ctrl)
 	if err != nil {
 		log.Printf("in mongoDatabase.UploadDevice failed to upload device fully due to failed validation: %v", err)
 		return err
@@ -328,7 +328,6 @@ func (mdb *MongoDatabase) incrementUnvalidatedNumberOfDevices(unvalidatedMinMax 
 		log.Println("in mongoDatabase.incrementUnvalidatedNumberOfDevices MinMaxValuesDocumentID is invalid")
 		return err
 	}
-	unvalidatedMinMax.NumberOfDevices++
 	update := bson.D{{"$set", bson.D{{"unvalidated", unvalidatedMinMax}}}}
 	ctx, cancel := context.WithTimeout(ctrl.Ctx, time.Second*30)
 	defer cancel()

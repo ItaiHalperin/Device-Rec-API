@@ -18,4 +18,6 @@ type DatabaseInterface interface {
 	ResetDatabase(*dataTypes.FlowControl) error
 	SetLastYearEquivalentBenchmarkScores(*dataTypes.Device, *dataTypes.FlowControl) error
 	GetTop3(*dataTypes.Filters, *dataTypes.FlowControl) ([]dataTypes.Device, error)
+	IsInterruptedValidation(*dataTypes.FlowControl) (bool, error)
+	ValidateScores(dataTypes.MinMaxValues, *dataTypes.FlowControl) error
 }

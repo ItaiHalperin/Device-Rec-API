@@ -89,7 +89,6 @@ type ValidatedAndUnvalidatedMinMaxValues struct {
 }
 
 type MinMaxValues struct {
-	NumberOfDevices int         `bson:"number-of-devices"`
 	Sentiment       MinMaxFloat `bson:"sentiment"`
 	Magnitude       MinMaxFloat `bson:"magnitude"`
 	SingleCoreScore MinMaxFloat `bson:"single-core-score"`
@@ -152,5 +151,5 @@ type Filters struct {
 }
 
 type ValidationFlag struct {
-	IsUnfinishedValidation bool
+	IsUnfinishedValidation bool `bson:"is-unfinished-validation"`
 }

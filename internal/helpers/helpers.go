@@ -265,7 +265,6 @@ func GetNewMinMax(device *dataTypes.Device, validatedAndUnvalidatedMinMaxValue d
 		Max: newMaxNits,
 	}
 	newMinMax := dataTypes.MinMaxValues{
-		NumberOfDevices: validatedAndUnvalidatedMinMaxValue.Validated.NumberOfDevices,
 		Sentiment:       newSentimentMinMax,
 		Magnitude:       newMagnitudeMinMax,
 		SingleCoreScore: newSingleCoreScoreMinMax,

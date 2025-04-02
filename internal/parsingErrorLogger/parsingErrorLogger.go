@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	parsingErrorLogsPath = "internal/parsingErrorLogger/parsingErrorLogs.json"
+	parsingErrorLogsPath = "parsingErrorLogs.json"
 )
 
 type parsingErrorLogsFile struct {
@@ -40,7 +40,7 @@ func LogErrorInJsonFile(message string, ctrl *dataTypes.FlowControl) {
 	updatedJSON, _ := json.MarshalIndent(parsingErrorLogs, "", "  ")
 	err = os.WriteFile(parsingErrorLogsPath, updatedJSON, 0644)
 	if err != nil {
-		log.Println("in errorMonitoring.IncrementCleanUpErrors failed to rewrite error file: ", err)
+		log.Println("in parsingErrorLogger.LogErrorInJsonFile failed to rewrite error file: ", err)
 		ctrl.StopOnTooManyErrorsChannel <- struct{}{}
 	}
 

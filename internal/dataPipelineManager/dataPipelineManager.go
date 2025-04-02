@@ -79,7 +79,7 @@ func processNormalization(dal dataAccessLayer.DataAccessLayer, device *dataTypes
 	reviewer.SetUnvalidatedNormalizedReviewScore(newMinMax, device)
 
 	if !reflect.DeepEqual(newMinMax, minMaxValues.Validated) {
-		return dataTypes.MinMaxValues{}, dal.Database.NormalizeUnvalidatedScores(newMinMax, ctrl)
+		return newMinMax, dal.Database.NormalizeUnvalidatedScores(newMinMax, ctrl)
 	}
 	return newMinMax, nil
 }
@@ -117,6 +117,7 @@ func launchUploader(dal dataAccessLayer.DataAccessLayer, ctrl *dataTypes.FlowCon
 		device, err := gatherData(deviceInQueue, dal, ctrl)
 		if err != nil {
 			handleError(err, "data gathering failed", deviceInQueue.Name, 10*time.Second)
+			continue
 		}
 
 		if device.Benchmark.IsEstimatedBenchmark {
@@ -127,6 +128,16 @@ func launchUploader(dal dataAccessLayer.DataAccessLayer, ctrl *dataTypes.FlowCon
 		if err != nil {
 			handleError(err, "normalization failed", deviceInQueue.Name, 10*time.Second)
 			continue
+		}
+		isInterruptedValidation, err := dal.Database.IsInterruptedValidation(ctrl)
+		if err != nil {
+			handleError(err, "failed to check interrupted validation", "", 10*time.Second)
+			continue
+		} else if isInterruptedValidation {
+			err = dal.Database.ValidateScores(newMinMax, ctrl)
+			if err != nil {
+				handleError(err, "failed to validate after failed validation", "", 10*time.Second)
+			}
 		}
 		if err = dal.Database.UploadDevice(device, newMinMax, ctrl); err != nil {
 			handleError(err, "failed to upload device", deviceInQueue.Name, 10*time.Second)

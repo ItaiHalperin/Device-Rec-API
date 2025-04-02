@@ -39,7 +39,7 @@ const (
 )
 
 const (
-	errorCountersPath = "internal/errorMonitoring/errorCounters.json"
+	errorCountersPath = "errorCounters.json"
 )
 
 func IncrementError(errorType string, ctrl *dataTypes.FlowControl) {
